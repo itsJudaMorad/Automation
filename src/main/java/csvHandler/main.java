@@ -1,41 +1,49 @@
 package csvHandler;
 
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
-
-import com.opencsv.bean.ColumnPositionMappingStrategy;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
-
-import callbox.LeadCallbox;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class main {
 
-	  public static void main(String[] args) throws Exception {
-	        String csvFile =  System.getProperty("user.dir")+"/ad120Files/callbox.csv";
+	 public static void main(String[] args) {
+	        // Hypothetical list of entries (could be objects, tuples, etc.), assuming duplicates are possible here
+	        List<Entry> entries = Arrays.asList(
+	                new Entry("123", "SourceA"),
+	                new Entry("123", "SourceB"),
+	                new Entry("456", "SourceC")
+	        );
 
-	        ColumnPositionMappingStrategy<LeadCallbox> strategy = new ColumnPositionMappingStrategy<>();
-	        strategy.setType(LeadCallbox.class);
-	        String[] memberFieldsToBindTo = {
-	            "name", "customerNumber", "trackingSource", "page", "duration", 
-	            "talkTime", "hourOfDay", "date", "time", "tags", "campaign", 
-	            "source", "medium", "keyword", "adgroupId", "campaignId", "email", 
-	            "callPath", "device", "sourceTag", "formName", "keywordSpotting"
-	        };
-	        strategy.setColumnMapping(memberFieldsToBindTo);
+	        Map<String, List<String>> phoneNumberToMediaSourcesMap = entries.stream()
+	                .collect(Collectors.groupingBy(
+	                        Entry::getPhoneNumber, // Assuming Entry class has a getPhoneNumber method
+	                        Collectors.mapping(Entry::getMediaSource, Collectors.toList())
+	                ));
 
-	        Reader reader = Files.newBufferedReader(Paths.get(csvFile));
+	        // phoneNumberToMediaSourcesMap now has phone numbers as keys and lists of media sources as values
+	        phoneNumberToMediaSourcesMap.forEach((phone, mediaSources) -> {
+	            System.out.println("Phone Number: " + phone + " -> Media Sources: " + mediaSources);
+	        });
+	    }
 
-	        CsvToBean<LeadCallbox> csvToBean = new CsvToBeanBuilder<LeadCallbox>(reader)
-	                .withMappingStrategy(strategy)
-	                .withSkipLines(1)
-	                .withIgnoreLeadingWhiteSpace(true)
-	                .build();
+	    // Placeholder for your actual object class
+	    static class Entry {
+	        private String phoneNumber;
+	        private String mediaSource;
 
-	        List<LeadCallbox> callRecords = csvToBean.parse();
-	        callRecords.forEach(System.out::println);
+	        public Entry(String phoneNumber, String mediaSource) {
+	            this.phoneNumber = phoneNumber;
+	            this.mediaSource = mediaSource;
+	        }
+
+	        public String getPhoneNumber() {
+	            return phoneNumber;
+	        }
+
+	        public String getMediaSource() {
+	            return mediaSource;
+	        }
 	    }
 }
 

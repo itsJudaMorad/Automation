@@ -65,8 +65,11 @@ public class ExcelToCSVConverter {
 	        case FORMULA:
 	            cellValue = cell.getCellFormula();
 	            break;
+		default:
+			break;
 	    }
-	    // Remove commas from cell value
-	    return cellValue.replaceAll(",", "");
+	    cellValue = cellValue.replaceAll(",", "");
+	    cellValue = cellValue.toLowerCase();
+	    return cellValue;
 	}
 }

@@ -38,11 +38,7 @@ public class CsvReaderBmby {
 
                leads.add(lead);
            }
-
            // Print out the leads
-           for (LeadBmby lead : leads) {
-               System.out.println(lead);
-           }
        } catch (Exception e) {
            e.printStackTrace();
        }

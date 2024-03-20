@@ -4,7 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class LeadCallbox {
-	   private String name;
+		private String mediaSource;
+	private String name;
 	    private String customerNumber;
 	    private String trackingSource;
 	    private String page;
@@ -159,5 +160,10 @@ public class LeadCallbox {
 		public void setKeywordSpotting(String keywordSpotting) {
 			this.keywordSpotting = keywordSpotting;
 		}
-
+		 public String getMediaSource() {
+				return mediaSource;
+			}
+			public void setMediaSource(String mediaSource) {
+				this.mediaSource = mediaSource;
+			}
 }
