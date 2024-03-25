@@ -5,6 +5,19 @@ import java.util.regex.Pattern;
 
 public class PhoneNumberHandler {
 
+	   public static boolean containsPhoneNumber(String text) {
+		      // Regex to match various phone number formats
+	        // Includes numbers starting with + and country code, numbers with or without leading zeros, and varying lengths
+	        String phonePattern = "(\\+\\d{1,4}\\s?\\d{1,3}\\s?\\d{4,})|(\\d{9,10})";
+	        
+	        // Compile the regex pattern
+	        Pattern pattern = Pattern.compile(phonePattern);
+	        // Create a matcher to find matches in the input text
+	        Matcher matcher = pattern.matcher(text);
+	        
+	        // Return true if any match is found
+	        return matcher.find();
+	    }
 	public static String extractDigits(String phoneNumber) {
 		// Define regular expressions to match phone number formats
 		String pattern1 = "0?([1-9][0-9]{8})"; // for format "0548421854"

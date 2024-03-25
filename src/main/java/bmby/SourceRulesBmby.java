@@ -10,6 +10,8 @@ public class SourceRulesBmby {
 			sourceMedia= "google_brand";
 		} else if (sourceMedia.length() == 0) {
 			sourceMedia = "אורגני";
+		} else if (sourceMedia.contains("pmax")) {
+			sourceMedia = "pmax";
 		}
 		return sourceMedia;
 	}
