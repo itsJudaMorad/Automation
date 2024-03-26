@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import bmby.LeadBmby;
-import csvHandler.test;
+import csvHandler.RunAd120;
 
-public class MediaSourceStats extends test {
+public class MediaSourceStats extends RunAd120 {
 	public int totalCounts = 0;
 	public int isRelevant = 0;
 	public int isSchedule = 0;

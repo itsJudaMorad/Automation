@@ -18,7 +18,7 @@ import callbox.CsvReaderCallbox;
 import callbox.LeadCallbox;
 import callbox.SourceRulesCallbox;
 
-public class test {
+public class RunAd120 {
 
 	public static ExcelToCSVConverter csvConverter = new ExcelToCSVConverter();
 	public static CsvReaderBmby csvReader = new CsvReaderBmby();
