@@ -1,7 +1,7 @@
 package base;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MediaSourcePriority {
@@ -21,7 +21,7 @@ public class MediaSourcePriority {
 //		phoneNumberToPriorityMediaSourceMap.forEach((phone, mediaSource) -> {
 //			System.out.println("Phone Number: " + phone + " -> Priority Media Source: " + mediaSource);
 //		});
-//	}
+//	}   
 
 	public static MediaSourceAndPlatform getPriorityMediaSource(List<MediaSourceAndPlatform> mediaSourcesAndPlatforms) {
 	    // Prioritize "flow"
@@ -40,13 +40,30 @@ public class MediaSourcePriority {
 	        return mankalimSource;
 	    }
 
-	    // Check for "google" or "facebook" regardless of additional string content
-	    MediaSourceAndPlatform googleOrFacebookSource = mediaSourcesAndPlatforms.stream()
-	            .filter(source -> source.getMediaSource().toLowerCase().contains("google") || 
-	                              source.getMediaSource().toLowerCase().contains("facebook"))
-	            .findFirst().orElse(null);
-	    if (googleOrFacebookSource != null) {
-	        return googleOrFacebookSource;
+	    // New prioritization logic for "facebook" over "google", and within "google", prioritize those with "category"
+	    Optional<MediaSourceAndPlatform> facebookSource = mediaSourcesAndPlatforms.stream()
+	            .filter(source -> source.getMediaSource().toLowerCase().contains("facebook"))
+	            .findFirst();
+
+	    if (facebookSource.isPresent()) {
+	        return facebookSource.get();
+	    } else {
+	        List<MediaSourceAndPlatform> googleSources = mediaSourcesAndPlatforms.stream()
+	                .filter(source -> source.getMediaSource().toLowerCase().contains("google"))
+	                .collect(Collectors.toList());
+
+	        if (!googleSources.isEmpty()) {
+	            // Prioritize google sources with 'category' in them
+	            Optional<MediaSourceAndPlatform> googleSourceWithCategory = googleSources.stream()
+	                    .filter(source -> source.getMediaSource().toLowerCase().contains("category"))
+	                    .findFirst();
+
+	            if (googleSourceWithCategory.isPresent()) {
+	                return googleSourceWithCategory.get();
+	            } else {
+	                return googleSources.get(0); // Return the first google source if none contain 'category'
+	            }
+	        }
 	    }
 
 	    // Check for "pmax"

@@ -1,7 +1,5 @@
 package base;
 
-import base.EntryPhoneAndMedia.Platform;
-
 public class MediaSourceAndPlatform {
 	 private final String mediaSource;
 	    private final String platform;

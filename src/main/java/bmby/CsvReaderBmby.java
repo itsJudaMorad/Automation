@@ -2,8 +2,6 @@ package bmby;
 
 import java.io.FileReader;
 import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,13 +9,9 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
-
 public class CsvReaderBmby {
-	public  List<LeadBmby> convertToObj() {
+	public  List<LeadBmby> convertToObj(String fileName) {
 
-	   String fileName = System.getProperty("user.dir")+"/ad120Files/bmby.csv";
 	   List<LeadBmby> leads = new ArrayList<>();
 
        try (Reader reader = new FileReader(fileName);
