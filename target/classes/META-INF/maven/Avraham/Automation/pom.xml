@@ -3,7 +3,19 @@
   <groupId>Avraham</groupId>
   <artifactId>Automation</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  
+   <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <!-- Specify the main class to run -->
+                    <mainClass>csvHandler.RunAd120</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
   
   <dependencies>
 <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->

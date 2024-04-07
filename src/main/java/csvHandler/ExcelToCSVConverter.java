@@ -19,6 +19,15 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ExcelToCSVConverter {
 
 	public void convertExcelToCSV(String excelFilePath, String csvFilePath) {
+		 File excelFileToCheck = new File(excelFilePath);
+		    
+		    // Check if the file exists
+		    if (!excelFileToCheck.exists()) {
+		        System.err.println("The specified Excel file ["+excelFilePath+"] does not exist. Please check the file path.");
+		        System.err.println("The program STOP running.");
+		        System.exit(1);
+		    }
+		
 		try {
 			FileInputStream excelFile = new FileInputStream(new File(excelFilePath));
 			Workbook workbook;

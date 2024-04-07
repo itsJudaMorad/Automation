@@ -23,6 +23,7 @@ public class MediaSourceStats extends RunAd120 {
 
 	public static  Map<String, MediaSourceStats>  getSummaryLeadsData(List<SummaryLead> summaryLeads) {
 
+		try {
 		csvConverter.convertExcelToCSV(ad120Folder+"/bmby_r.xlsx", ad120Folder+"/bmby_r.csv");
 		csvConverter.convertExcelToCSV(ad120Folder+"/bmby_sch.xlsx", ad120Folder+"/bmby_sch.csv");
 		csvConverter.convertExcelToCSV(ad120Folder+"/bmby_can.xlsx", ad120Folder+"/bmby_can.csv");
@@ -31,7 +32,7 @@ public class MediaSourceStats extends RunAd120 {
 		List<LeadBmby> bmbySCHLeads = csvReader.convertToObj(ad120Folder+"/bmby_sch.csv");
 		List<LeadBmby> bmbyCANLeads = csvReader.convertToObj(ad120Folder+"/bmby_can.csv");
 		List<LeadBmby> bmbyDONELeads = csvReader.convertToObj(ad120Folder+"/bmby_done.csv");
-
+		
 
 		for (SummaryLead summeryLead : summaryLeads) {
 			String summeryLeadPhone = summeryLead.phoneNumber;
@@ -48,14 +49,23 @@ public class MediaSourceStats extends RunAd120 {
 			if(existsInR) {
 				summeryLead.isRellevant = true;
 			} 
-			if (existsInSCH || existsInCAN) {
+			if (existsInSCH) { //|| existsInCAN) {
 				summeryLead.isSechedule = true;
+				summeryLead.isRellevant = true;
+			}
+			if(existsInCAN) {
+				summeryLead.isSechedule = true;
+				summeryLead.isRellevant = true;
 			}
 			if (existsInDONE) {
 				summeryLead.isDone = true;
+				summeryLead.isRellevant = true;
 			}
 		}
-
+		} catch (Exception e) {
+			System.err.println("Something Worng with the files [relevant / scheduled / cancel / done] \n "
+					+ "1. Check that the files are exist \n2. Check the name of the files. it should match to README file" );
+		}
 		Map<String, MediaSourceStats> mediaSourceCounts = new HashMap<>();
 
 		for (SummaryLead summeryLead : summaryLeads) {
