@@ -55,6 +55,7 @@ public class Orders {
 
 	public static  List<ChampionLead> getLeadOrder(List<Orders> allOrders, List<ChampionLead> leads) {
 		for (ChampionLead lead : leads) {
+			
 			for(Orders order : allOrders) {
 				if (order.phone1.contains(lead.phoneNumber) || order.phone2.contains(lead.phoneNumber)) {
 					lead.isLeadPlacedOrder = true;
@@ -62,6 +63,7 @@ public class Orders {
 				}
 			}
 		}
+		
 		return leads;
 	}
 

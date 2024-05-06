@@ -8,6 +8,7 @@ import java.util.Map;
 import com.github.javafaker.Faker;
 
 import base.ChampionLead;
+import base.JsonUtil;
 import base.PhoneNumberHandler;
 import callbox.FilterCallboxLeads;
 import callbox.LeadCallbox;
@@ -31,7 +32,7 @@ public class Run {
 		List<ChampionLead> championLeads = new ArrayList<ChampionLead>();
 		List<ChampionLead> filteredChampionLeads = new ArrayList<ChampionLead>();
 
-		csvConverter.convertExcelToCSV(championFiles+"/callbox.xlsx", championCSV+"/callbox.csv");
+		csvConverter.convertExcelToCSV(championFiles+"/callbox.xls", championCSV+"/callbox.csv");
 		List<LeadCallbox> callboxLeads = CsvHandler.convertCSVToObject(championCSV+"/callbox.csv", LeadCallbox.headers , LeadCallbox.class);
 		carBrand = CarBrand.findCarBrand(callboxLeads);
 
@@ -55,43 +56,34 @@ public class Run {
 				championLeads.add(championLead);
 			}
 		}
-
-
-		// Set lead order
-		championLeads = Orders.getLeadOrder(orders, championLeads);
-		championLeads.forEach((v -> System.out.println(v.phoneNumber +" : "+v.isLeadPlacedOrder)));
-
-		// Set Lead Process
-		Map<String, List<String>> as =Process.getTheDuplicatesLeadInProcessList(process);
-		for (Map.Entry<String, List<String>> entry : as.entrySet()) {
-			System.out.println("Phone Number: " + entry.getKey() + ", Process Stages: " + entry.getValue());
-		}
-		championLeads = Process.getLeadProcess(process,championLeads);
-		championLeads.forEach((v -> System.out.println(v.phoneNumber +" : "+v.process)));
-
+		
 		// get lead that not exist on callbox
 		List<ChampionLead> notExistOnCallbox = new ArrayList<ChampionLead>();
 		for(Leads lead : leads) {
 			String source = Leads.setMediaSourceByRules(lead);
-			String leadPhoneNumbers = PhoneNumberHandler.removeDashFromPhoneNumber(lead.phone);
+			List<String> leadPhonenNumbers = PhoneNumberHandler.getMultiplePhoneNumberAsArray(lead.phone);
 			boolean leadExist = false;
 			for(ChampionLead championLead : championLeads) {
-				if(leadPhoneNumbers.contains(championLead.phoneNumber)) {
+				if(leadPhonenNumbers.contains(championLead.phoneNumber)) {
 					leadExist = true;
 					break;
 				}
 			}
 			if(!leadExist && CarBrand.containsAnySubBrand(lead.modelGroup, carBrand) && lead.processNumber.length() > 6) {
-				ChampionLead leadaa = new ChampionLead(leadPhoneNumbers, source);
-				leadaa.CarModel = lead.modelGroup;
-				notExistOnCallbox.add(leadaa);
+				ChampionLead newChampionLead = new ChampionLead(leadPhonenNumbers.get(0), source);
+				newChampionLead.CarModel = lead.modelGroup;
+				notExistOnCallbox.add(newChampionLead);
+				
 			}
 		}
-		notExistOnCallbox.forEach((v -> System.out.println(v.phoneNumber +" : "+v.CarModel+ " : "+ v.mediaSource)));
 		List<ChampionLead> combinedChampion = new ArrayList<ChampionLead>(championLeads);
 		combinedChampion.addAll(notExistOnCallbox);
-
-
+		combinedChampion = Orders.getLeadOrder(orders, combinedChampion);
+		
+		// Set Lead Process
+		Map<String, List<String>> as =Process.getTheDuplicatesLeadInProcessList(process);
+		combinedChampion = Process.getLeadProcess(process,combinedChampion);
+		
 		// get the campaign details
 		for(ChampionLead championLead : combinedChampion) {
 			Process.countTheNumberOfProcess(championLead);
@@ -104,7 +96,8 @@ public class Run {
 				}
 			}
 		}
-					
+				
+		// update Media campaign names
 		for(ChampionLead championLead : combinedChampion) {
 			for(LeadCallbox callboxLead : callboxLeads) {
 				if(callboxLead.getCustomerNumber().contains(championLead.phoneNumber)) {
@@ -116,14 +109,15 @@ public class Run {
 				}
 			}
 		}
-
+		String jsonOutput= JsonUtil.toJson(combinedChampion);
+		Map<String, List<ChampionLead>> asss = LeadFilter.groupLeadsByPhoneNumber(combinedChampion);
+		 jsonOutput = JsonUtil.toJson(asss);
+        filteredChampionLeads = LeadFilter.filterChampionLeads(asss);
 		
-
-		Map<String, Integer> preferences = LeadFilter.getUserPreferencesWithPanel();
-		filteredChampionLeads = LeadFilter.filterLeadsByPreferencess(combinedChampion, preferences);
+//		Map<String, Integer> preferences = LeadFilter.getUserPreferencesWithPanel();
+//		filteredChampionLeads = LeadFilter.filterLeadsByPreferencess(combinedChampion, preferences);
 		Faker faker= new Faker();
 		ChampionLead.writeToCSV(filteredChampionLeads, "results/allLeadData_"+faker.harryPotter().character()+".csv");
-	}
-
-
+	}	
+	
 }

@@ -1,5 +1,8 @@
 package base;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,5 +61,20 @@ public class PhoneNumberHandler {
 	
 	public static String removeDashFromPhoneNumber(String phoneNumber) {
 		return phoneNumber.replace("-", "");
+	}
+	
+	public static List<String>getMultiplePhoneNumberAsArray(String phoneNumbers) {
+		String[] numbers = phoneNumbers.split(" / ");
+		for (int i = 0; i < numbers.length; i++) {
+            numbers[i] = numbers[i].replaceAll("-", "");
+            numbers[i] = extractDigits(numbers[i]);
+        }
+		 List<String> numbersList = Arrays.asList(numbers);
+        return numbersList;
+		
+	}
+	
+	public static void main(String[] args) throws IOException {
+		getMultiplePhoneNumberAsArray("054-6223359 / 054-4589777");
 	}
 }

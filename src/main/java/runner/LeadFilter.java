@@ -3,6 +3,7 @@ package runner;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +22,52 @@ import base.ChampionLead;
 
 
 	public class LeadFilter {
+		
+		
+		 public static List<ChampionLead> filterChampionLeads(Map<String, List<ChampionLead>> allLeads) {
+	        List<ChampionLead> filteredLeads = new ArrayList<>();
+	        Map<Integer, Integer> mediaSourcePriority = Map.of(12, 1, 60, 2, 54, 3);
+
+	        
+	        for (Map.Entry<String, List<ChampionLead>> entry : allLeads.entrySet()) {
+	            List<ChampionLead> leads = entry.getValue();
+	            List<ChampionLead> halfFilteredLeads = new ArrayList<ChampionLead>();
+	            ChampionLead selectedLead = null;
+	            for (ChampionLead lead : leads) {
+	            	if(lead.isLeadOrdered == 1 || lead.isLeadSetMeeting == 1 || lead.isLeadOpportunity == 1) {
+	            		halfFilteredLeads.add(lead);
+	            	}else {
+	            		halfFilteredLeads.add(lead);
+	            	}
+	            	for (ChampionLead l : halfFilteredLeads) {
+	            		if(l.mediaSource.equals("60")) {
+	            			selectedLead = l;
+	            			break;
+	            		} else if(l.mediaSource.equals("12")) {
+	            			selectedLead = l;
+	            			break;
+	            		}else if (l.mediaSource.equals("54")) {
+	            			selectedLead = l;
+	            			break;
+	            		} else {
+	            			selectedLead = l;
+	            		}
+	            	}
+	            }
+	           filteredLeads.add(selectedLead); 
+	        }
+	        return filteredLeads;
+	    }
+		 
+		 
+		 public static Map<String, List<ChampionLead>> groupLeadsByPhoneNumber(List<ChampionLead> leads) {
+		        Map<String, List<ChampionLead>> leadsByPhoneNumber = new HashMap<>();
+
+		        for (ChampionLead lead : leads) {
+		                leadsByPhoneNumber.computeIfAbsent(lead.phoneNumber, k -> new ArrayList<>()).add(lead);
+		        }
+		        return leadsByPhoneNumber;
+		    }
 	    public static List<ChampionLead> filterLeadsByPreferencess(List<ChampionLead> leads, Map<String, Integer> preferences) {
 	        // Define platforms with a default priority of 4
 	        Set<String> defaultPriorityPlatforms = new HashSet<>(Arrays.asList(
@@ -30,7 +77,7 @@ import base.ChampionLead;
 	        // Group leads by phoneNumber
 	        Map<String, List<ChampionLead>> groupedLeads = new HashMap<>();
 	        for (ChampionLead lead : leads) {
-	            groupedLeads.computeIfAbsent(lead.phoneNumber, k -> new ArrayList<>()).add(lead);
+	        	groupedLeads.computeIfAbsent(lead.phoneNumber, k -> new ArrayList<>()).add(lead);
 	        }
 
 	        // Filter based on preferences and default priorities
@@ -41,7 +88,6 @@ import base.ChampionLead;
 	                filteredLeads.add(preferredLead);
 	            }
 	        }
-
 	        return filteredLeads;
 	    }
 	    public static ChampionLead getPreferredLead(List<ChampionLead> leads, Map<String, Integer> preferences, Set<String> defaultPriorityPlatforms) {

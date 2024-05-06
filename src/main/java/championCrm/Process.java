@@ -98,7 +98,7 @@ public class Process {
 		 Map<String, List<String>> phoneToProcessStages = getTheDuplicatesLeadInProcessList(allProcess);
 		for (ChampionLead lead : leads) {
 			for(Map.Entry<String, List<String>> entry : phoneToProcessStages.entrySet()) {
-				if(PhoneNumberHandler.removeDashFromPhoneNumber(entry.getKey()).contains(lead.phoneNumber)){
+				if(PhoneNumberHandler.getMultiplePhoneNumberAsArray(entry.getKey()).contains(lead.phoneNumber)){
 					lead.process = getHighestPriorityStage(entry.getValue());
 					break;
 				}

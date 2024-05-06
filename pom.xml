@@ -11,7 +11,7 @@
                 <version>3.0.0</version>
                 <configuration>
                     <!-- Specify the main class to run -->
-                    <mainClass>csvHandler.RunAd120</mainClass>
+                    <mainClass>runner.Run</mainClass>
                 </configuration>
             </plugin>
         </plugins>
