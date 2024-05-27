@@ -31,7 +31,8 @@ public class CarBrand {
 	public enum Brand {
 	    SEAT("IBIZA", "ARONA", "ATECA", "IBIZA NEW","LEON"),
 	    CUPRA("CUPRA LEON", "LEON", "CUPRA ATECA", "CUPRA FORMENTOR"),
-	    VWCV("Caddy", "Amarok", "Transporter");
+	    VWCV("T6 Caravelle", "Amarok D.Cab", "Crafter 50", "Caddy", "Crafter 35", "T6 Delivery Van", "Multivan", "CRAFTER 50 DOUBLE CAB", "CRAFTER 50 SINGLE CAB", "T6 KOMBI", "T6 California", "T6 Pick Up", "TIGUAN", "Octavia");
+
 
 	    private List<String> subBrands;
 

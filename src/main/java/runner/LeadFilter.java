@@ -70,23 +70,31 @@ import base.ChampionLead;
 		    }
 	    public static List<ChampionLead> filterLeadsByPreferencess(List<ChampionLead> leads, Map<String, Integer> preferences) {
 	        // Define platforms with a default priority of 4
-	        Set<String> defaultPriorityPlatforms = new HashSet<>(Arrays.asList(
+	        
+	    	  // Filter based on preferences and default priorities
+	        List<ChampionLead> filteredLeads = new ArrayList<>();
+	    	Set<String> defaultPriorityPlatforms = new HashSet<>(Arrays.asList(
 	            "5", "62", "119", "81", "118", "61", "128", "129", "220", "85", "84"
 	        ));
 
 	        // Group leads by phoneNumber
 	        Map<String, List<ChampionLead>> groupedLeads = new HashMap<>();
 	        for (ChampionLead lead : leads) {
+	        	
 	        	groupedLeads.computeIfAbsent(lead.phoneNumber, k -> new ArrayList<>()).add(lead);
 	        }
 
-	        // Filter based on preferences and default priorities
-	        List<ChampionLead> filteredLeads = new ArrayList<>();
+	      
 	        for (List<ChampionLead> groupedLead : groupedLeads.values()) {
-	            ChampionLead preferredLead = getPreferredLead(groupedLead, preferences, defaultPriorityPlatforms);
-	            if (preferredLead != null) {
-	                filteredLeads.add(preferredLead);
-	            }
+	        	 List<ChampionLead> leadsWithMultiOrders = groupedLead.stream().filter(lead -> lead.isLeadOrdered == 1 ).toList();
+	        	if(leadsWithMultiOrders.size() > 1) {
+	        		filteredLeads.addAll(leadsWithMultiOrders);
+	        	}else {
+	        		ChampionLead preferredLead = getPreferredLead(groupedLead, preferences, defaultPriorityPlatforms);
+	        		if (preferredLead != null) {
+	        			filteredLeads.add(preferredLead);
+	        		}
+	        	}
 	        }
 	        return filteredLeads;
 	    }

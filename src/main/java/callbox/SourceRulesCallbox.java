@@ -11,6 +11,8 @@ public class SourceRulesCallbox {
 			mediaSource = "12";
 		}else if (leadCallbox.getTags().contains("www.")) {
 			mediaSource = "direct or unknown";
+		}else if (leadCallbox.getFormName().contains("Flow")) {
+			mediaSource = "Flow";
 		}
 		return mediaSource;
 	}
